@@ -30,14 +30,19 @@ export function useFinancialData<T>(dataType: string, params?: Record<string, an
         })
 
         if (!response.ok) {
-          throw new Error("Failed to fetch data")
+          throw new Error(`Failed to fetch data: ${response.statusText}`)
         }
 
         const result = await response.json()
+        
+        if (result.error) {
+          throw new Error(result.error)
+        }
+        
         setData(result.data)
       } catch (error) {
         console.error(`Error fetching ${dataType}:`, error)
-        setError("Failed to fetch data. Please try again.")
+        setError("Failed to fetch data. Please check your API key or try again.")
       } finally {
         setIsLoading(false)
       }

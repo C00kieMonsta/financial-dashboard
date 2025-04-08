@@ -1,12 +1,10 @@
 "use client";
 
-import { EconomicIndicatorCard } from "@/components/economic-indicator-card";
 import { StockQuoteCard } from "@/components/stock-quote-card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WarrenBuffettIndicator } from "@/components/warren-buffett-indicator";
-import { calculateBuffettIndicator, fetchEconomicIndicator, fetchStockQuote, type EconomicIndicator, type MarketStatus, type StockQuote } from "@/lib/api-service";
+import { calculateBuffettIndicator, fetchStockQuote, type MarketStatus, type StockQuote } from "@/lib/api-service";
 import { useAuth } from "@/lib/auth-context";
 import { AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -14,16 +12,12 @@ import { useEffect, useState } from "react";
 export default function DashboardPage() {
   const { apiKey } = useAuth();
   const [buffettIndicator, setBuffettIndicator] = useState<MarketStatus | null>(null);
-  const [stockQuotes, setStockQuotes] = useState<StockQuote[]>([]);
-  const [economicIndicators, setEconomicIndicators] = useState<EconomicIndicator[]>([]);
+  const [stockQuote, setStockQuote] = useState<StockQuote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Stock symbols to track
-  const stockSymbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "META"];
-
-  // Economic indicators to track
-  const indicators = ["REAL_GDP", "INFLATION", "UNEMPLOYMENT"];
+  // Only tracking AAPL stock
+  const stockSymbol = "AAPL";
 
   useEffect(() => {
     if (!apiKey) return;
@@ -37,13 +31,9 @@ export default function DashboardPage() {
         const buffettData = await calculateBuffettIndicator(apiKey);
         setBuffettIndicator(buffettData);
 
-        // Fetch stock quotes
-        const quotes = await Promise.all(stockSymbols.map((symbol) => fetchStockQuote(symbol, apiKey)));
-        setStockQuotes(quotes);
-
-        // Fetch economic indicators
-        const economicData = await Promise.all(indicators.map((indicator) => fetchEconomicIndicator(indicator, apiKey)));
-        setEconomicIndicators(economicData);
+        // Fetch stock quote for AAPL
+        const quote = await fetchStockQuote(stockSymbol, apiKey);
+        setStockQuote(quote);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
         setError("Failed to fetch financial data. Please check your API key or try again later.");
@@ -53,7 +43,7 @@ export default function DashboardPage() {
     };
 
     fetchData();
-  }, [apiKey, stockSymbols, indicators]);
+  }, [apiKey, stockSymbol]);
 
   if (isLoading) {
     return (
@@ -97,35 +87,20 @@ export default function DashboardPage() {
           </Card>
         )}
 
-        {/* Stock Quotes */}
-        <Tabs defaultValue="stocks" className="mt-6">
-          <TabsList className="flex justify-center mb-4">
-            <TabsTrigger value="stocks" className="px-4 py-2">
-              Stock Market
-            </TabsTrigger>
-            <TabsTrigger value="economy" className="px-4 py-2">
-              Economic Indicators
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="stocks">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {stockQuotes.map((quote) => (
-                <div className="shadow-md" key={quote.symbol}>
-                  <StockQuoteCard quote={quote} />
-                </div>
-              ))}
-            </div>
-          </TabsContent>
-          <TabsContent value="economy">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {economicIndicators.map((indicator) => (
-                <div className="shadow-md" key={indicator.value}>
-                  <EconomicIndicatorCard indicator={indicator} />
-                </div>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+        {/* Single Stock Quote - AAPL */}
+        {stockQuote && (
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle>Stock Quote</CardTitle>
+              <CardDescription>Latest stock price data from Polygon.io</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="max-w-sm mx-auto">
+                <StockQuoteCard quote={stockQuote} />
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check if API key exists in localStorage on component mount
-    const storedApiKey = localStorage.getItem("alphavantage_api_key")
+    const storedApiKey = localStorage.getItem("polygon_api_key")
     if (storedApiKey) {
       setApiKey(storedApiKey)
       setIsAuthenticated(true)
@@ -25,13 +25,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const handleSetApiKey = (key: string) => {
-    localStorage.setItem("alphavantage_api_key", key)
+    localStorage.setItem("polygon_api_key", key)
     setApiKey(key)
     setIsAuthenticated(true)
   }
 
   const logout = () => {
-    localStorage.removeItem("alphavantage_api_key")
+    localStorage.removeItem("polygon_api_key")
     setApiKey(null)
     setIsAuthenticated(false)
   }

@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { calculateBuffettIndicator, fetchStockQuote, fetchEconomicIndicator } from "@/lib/api-service"
+import { calculateBuffettIndicator, fetchStockQuote } from "@/lib/api-service"
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,16 +16,9 @@ export async function POST(request: NextRequest) {
         data = await calculateBuffettIndicator(apiKey)
         break
       case "stock-quote":
-        if (!params?.symbol) {
-          return NextResponse.json({ error: "Symbol is required" }, { status: 400 })
-        }
-        data = await fetchStockQuote(params.symbol, apiKey)
-        break
-      case "economic-indicator":
-        if (!params?.indicator) {
-          return NextResponse.json({ error: "Indicator is required" }, { status: 400 })
-        }
-        data = await fetchEconomicIndicator(params.indicator, apiKey)
+        // Default to AAPL if no symbol provided
+        const symbol = params?.symbol || "AAPL"
+        data = await fetchStockQuote(symbol, apiKey)
         break
       default:
         return NextResponse.json({ error: "Invalid data type" }, { status: 400 })

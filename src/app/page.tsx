@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import { useEffect } from "react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -18,11 +19,12 @@ export default function LoginPage() {
   const { setApiKey: setAuthApiKey, isAuthenticated } = useAuth();
   const router = useRouter();
 
-  // If already authenticated, redirect to dashboard
-  if (isAuthenticated) {
-    router.push("/dashboard");
-    return null;
-  }
+  // Use useEffect for redirection instead of doing it during render
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,12 +32,12 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Validate API key by making a simple request
+      // Validate API key by making a simple request to Polygon.io
       const response = await fetch(`https://api.polygon.io/v2/aggs/ticker/AAPL/prev?apiKey=${apiKey}`);
       const data = await response.json();
 
-      if (data.status === "ERROR" || !data.results) {
-        setError("Invalid API key or API limit reached. Please try again.");
+      if (response.status === 403 || !data.results) {
+        setError("Invalid API key. Please check your Polygon.io API key and try again.");
         setIsLoading(false);
         return;
       }
