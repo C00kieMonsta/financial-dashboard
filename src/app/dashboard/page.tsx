@@ -53,7 +53,7 @@ export default function DashboardPage() {
     };
 
     fetchData();
-  }, [apiKey]);
+  }, [apiKey, stockSymbols, indicators]);
 
   if (isLoading) {
     return (
@@ -110,14 +110,18 @@ export default function DashboardPage() {
           <TabsContent value="stocks">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {stockQuotes.map((quote) => (
-                <StockQuoteCard key={quote.symbol} quote={quote} className="shadow-md" />
+                <div className="shadow-md" key={quote.symbol}>
+                  <StockQuoteCard quote={quote} />
+                </div>
               ))}
             </div>
           </TabsContent>
           <TabsContent value="economy">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {economicIndicators.map((indicator) => (
-                <EconomicIndicatorCard key={indicator.name} indicator={indicator} className="shadow-md" />
+                <div className="shadow-md" key={indicator.value}>
+                  <EconomicIndicatorCard indicator={indicator} />
+                </div>
               ))}
             </div>
           </TabsContent>
