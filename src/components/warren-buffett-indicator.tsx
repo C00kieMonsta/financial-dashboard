@@ -62,7 +62,7 @@ export function WarrenBuffettIndicator({ data }: { data: MarketStatus }) {
           Market Status: <span className={getStatusColor()}>{data.status}</span>
         </p>
         <p className="mt-1 text-sm text-gray-600">
-          The Warren Buffett Indicator compares the total value of the stock market to the country's GDP. A ratio above
+          The Warren Buffett Indicator compares the total value of the stock market to the country&apos;s GDP. A ratio above
           1.2 suggests the market may be overvalued, while below 0.8 suggests undervaluation.
         </p>
       </div>

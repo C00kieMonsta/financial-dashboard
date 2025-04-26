@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "./auth-context"
 
-export function useFinancialData<T>(dataType: string, params?: Record<string, any>) {
+export function useFinancialData<T>(dataType: string, params?: Record<string, unknown>) {
   const { apiKey } = useAuth()
   const [data, setData] = useState<T | null>(null)
   const [isLoading, setIsLoading] = useState(true)

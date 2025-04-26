@@ -15,6 +15,12 @@ export interface MarketStatus {
   status: "Undervalued" | "Fair Value" | "Overvalued";
 }
 
+export interface EconomicIndicator {
+  name: string;
+  value: number;
+  date: string;
+}
+
 // The correct Polygon.io API endpoints
 const POLYGON_BASE_URL = "https://api.polygon.io";
 const STOCK_PREVIOUS_CLOSE_ENDPOINT = "/v2/aggs/ticker";
