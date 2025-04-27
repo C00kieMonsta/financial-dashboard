@@ -1,5 +1,5 @@
 import { Progress } from "@/components/ui/progress"
-import type { MarketStatus } from "@/lib/api-service"
+import type { MarketStatus } from "@/lib/api-types"
 
 export function WarrenBuffettIndicator({ data }: { data: MarketStatus }) {
   // Format numbers to billions with 2 decimal places
@@ -58,7 +58,7 @@ export function WarrenBuffettIndicator({ data }: { data: MarketStatus }) {
       </div>
 
       <div className="rounded-lg bg-gray-100 p-4">
-        <p className="font-medium">
+        <p className="font-medium text-black">
           Market Status: <span className={getStatusColor()}>{data.status}</span>
         </p>
         <p className="mt-1 text-sm text-gray-600">
